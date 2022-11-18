@@ -1,6 +1,7 @@
 #!/usr/bin/env raku
 
 use Proc::Easier;
+use Text::Utils :ALL;
 
 if not @*ARGS.elems {
     print qq:to/HERE/;
@@ -15,16 +16,25 @@ if not @*ARGS.elems {
 }
 
 #### subroutines ####
-sub read-template {
+sub create-template(:$ifil!, :$ofil, :$debug) {
+    # a one-time pass to create a usable template from the poster
+    # amalgamated PS doc
+    my $fh = open $ofil, :w;
+    for $ifil.IO.lines -> $line is copy {
+        # skip show lines
+    }
+}
+
+sub read-template($fnam, :$debug) {
 }
 
 sub write-resources() {
     # 
 }
 
-sub ps2pdf($ps) {
+sub ps2pdf($ps) is export {
     my $cmd = "ps2pdf $ps";
-    cmd $pdf;
+    my $res = cmd $pdf;
 }
 
 
