@@ -41,7 +41,7 @@ if not @*ARGS.elems {
     exit;
 }
 
-my @inches = 3, 3.5, 4, 4.5, 5, 5.5, 6;
+my @inches = 3.5, 4, 4.5, 5, 5.5, 6;
 
 for @fonts -> $font-name {
     say "Font $font-name" if $debug;
