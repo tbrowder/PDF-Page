@@ -1,9 +1,17 @@
 %!PS-Adobe-3.0
 %% Author: Tom Browder
-%% Dec 2016
+%% Nov 2022
+
+% %%Orientation: see p. 645
 %%Orientation: Landscape
-% width height in PS points:
-<< /PageSize [1728 2592] /Orientation 0 >> setpagedevice
+
+% /Orientation and %%Orientation should be consistent with available media
+
+% /PageSize: see p. 233
+% /Orientation: see p. 237 ; only affects roll media
+% image (paper) size:width x height in PS points:
+% 8.5 x 11.0 => 612 x 792
+<< /PageSize [612 792] /Orientation 0 >> setpagedevice
 
 save
 %
@@ -91,7 +99,11 @@ save
 % old usage:     /fontname findfont size scalefont setfont
 % level 2 usage: /fontname size selectfont
 
-/puttext { % string location_code [integer: 0-11] (to place--relative to the current point); must have a current and correct font
+/puttext {
+    % string location_code [integer: 0-11]
+    % (to place--relative to the current point);
+    % must have a current and correct font; e.g.
+    %  0 0 moveto (hi) 0 puttext
   /code exch def
   /stname exch def
   gsave
@@ -274,8 +286,9 @@ end
 %%%%%%% BEGIN PAGE
 %%%%%%% begin text
 % "paper" is 2' x 3'; in PS points: 1728 2592
+% "paper" is 8.5" x 11.0"; in PS points: 612 792
 gsave
-24 i2p 0 translate
+8.5 i2p 0 translate
 90 rotate
 
 % temp scale
@@ -284,126 +297,41 @@ gsave
 
 % outline paper area
 newpath 0 0 moveto
-36 i2p 0 rlineto
-0 24 i2p rlineto
--36 i2p 0 rlineto
+11 i2p 0 rlineto
+0 8.5 i2p rlineto
+-11 i2p 0 rlineto
 closepath stroke
 
 % sizes are in inches
-/bf3  {/Times-Bold       3   i2p selectfont} def
-/bf4  {/Times-Bold       4   i2p selectfont} def
-/bf45 {/Times-Bold       4.5 i2p selectfont} def
-/tf1  {/Times-Roman      1   i2p selectfont} def
-/tf15 {/Times-Roman      1.5 i2p selectfont} def
-/bf2  {/Times-Bold       2   i2p selectfont} def
-/bf25 {/Times-Bold       2.5 i2p selectfont} def
-/bi25 {/Times-BoldItalic 2.5 i2p selectfont} def
-/tf15 {/Times-Roman      1.5 i2p selectfont} def
-/bf15 {/Times-Bold       1.5 i2p selectfont} def
+/bf3   {/Times-Bold       3   i2p selectfont} def
+/bf35  {/Times-Bold       3.5 i2p selectfont} def
+/bf4   {/Times-Bold       4   i2p selectfont} def
+/bf45  {/Times-Bold       4.4 i2p selectfont} def
+/bf5   {/Times-Bold       5   i2p selectfont} def
+/bf55  {/Times-Bold       5.5 i2p selectfont} def
+/bf6   {/Times-Bold       6   i2p selectfont} def
+/bf7   {/Times-Bold       7   i2p selectfont} def
 
-% for AL
-% Congratulations Graduate
-%      Anne Lawton
+/tf    {/Times-Roman      1   i2p selectfont} def
 
-% balloon images
-%    May 29, 2021
-% balloon images
-
-% Happy Birthday
-%    Tom III
-
-% adjust text easily
-
-% Congratulations Graduate
-/lin1-x 18  i2p def
-/lin1-y 19 i2p def
-/lin1-s 1  def % scale
-
-% Anne Lawton
-/lin2-x 18  i2p def
-/lin2-y 13.5 i2p def
-/lin2-s 1  def % scale
-
-% 2021-05-29
-/lin3-x 18  i2p def
-/lin3-y 8 i2p def
-/lin3-s 1  def % scale
-
-% Happy Birthday
-/lin4-x 18  i2p def
-/lin4-y 8 i2p def
-/lin4-s 1  def % scale
-
-% Tom III
-/lin5-x 18  i2p def
-/lin5-y 2.5 i2p def
-/lin5-s 1  def % scale
-
-%======================
-% Boo & Papa
-/lin6-x 35  i2p def
-/lin6-y 1 i2p def
-/lin6-s 1  def % scale
-
-% big text
-gsave
-0 0 1 setrgbcolor
-bf45
-gsave
-%lin1-s
-lin1-x lin1-y  moveto (Congratulations Graduate) 10 puttext % on baseline, centered horizontally
-grestore
-grestore
+/bif3   {/Times-BoldItalic 3   i2p selectfont} def
+/bif35  {/Times-BoldItalic 3.5 i2p selectfont} def
+/bif4   {/Times-BoldItalic 4   i2p selectfont} def
+/bif45  {/Times-BoldItalic 4.4 i2p selectfont} def
+/bif5   {/Times-BoldItalic 5   i2p selectfont} def
+/bif55  {/Times-BoldItalic 5.5 i2p selectfont} def
+/bif6   {/Times-BoldItalic 6   i2p selectfont} def
 
 gsave
-1 0 0 setrgbcolor
-bf45
-gsave
-%lin2-s
-lin2-x lin2-y moveto (Anne Lawton!) 10 puttext
-grestore
-grestore
+% make middle of page the origin
+11 i2p .5 mul 8.5 i2p .5 mul translate
+% draw 2 horizontal lines delimiting the width of the door frame
+newpath -5.5 i2p  3 i2p moveto 11.5 i2p 0 rlineto stroke
+newpath -5.5 i2p -3 i2p moveto 11.5 i2p 0 rlineto stroke
 
+%=== SPLIT
 
-gsave
-0 0 1 setrgbcolor
-bf45
-gsave
-%lin3-s
-lin3-x lin3-y moveto (2021-05-29) 10 puttext
 grestore
-grestore
-
-gsave
-0 0 1 setrgbcolor
-bf45
-gsave
-%lin4-s
-lin4-x lin4-y moveto (Happy Birthday) 10 puttext
-grestore
-grestore
-
-gsave
-0 0 1 setrgbcolor
-bf45
-gsave
-%lin5-s
-lin5-x lin5-y moveto (Tom III!) 10 puttext
-grestore
-grestore
-
-
-% Boo & Papa
-gsave
-0 0 1 setrgbcolor
-tf1
-gsave
-%lin6-s
-lin6-x lin5-y moveto (Boo & Papa) 11 puttext % on baseline, right-justified
-grestore
-grestore
-
-
 
 %% gsave
 %% 0 1 0 setrgbcolor
@@ -432,185 +360,6 @@ grestore
 %% grestore
 %% grestore
 
-%%% pictures here
-
-%% adjust pics easily
-% looks like origin is in ll corner
-% Mickey Mouse in classic pose
-/pic1-x 27 i2p def
-/pic1-y 11 i2p def
-%/tux-s 1  def % scale
-/pic1-s .7  def % scale
-
-% looks like origin is in ll corner
-% Heart, fancy outline
-/pic2-x 29 i2p def
-/pic2-y .9 i2p def
-/pic2-s .25  def % scale
-
-% looks like origin is in ll corner
-% Pluto
-/pic3-x 3 i2p def
-/pic3-y 11 i2p def
-/pic3-s .7  def % scale
-
-%%%%=======================================================
-%% start-picture
-% establish orientation, etc.
-gsave
-%8.5 i2p 0 translate
-%90 rotate
-%.9 dup scale
-pic3-x pic3-y translate
-pic3-s dup scale
-gsave
-BeginEPSF
-%%%% begin input EPS file =======================================
-% BEGIN EPS FILE: pluto-29.eps ==============================
-
-% END EPS FILE: pluto-29.eps ==============================
-%%%% end of input EPS file =======================================
-EndEPSF
-grestore
-grestore
-%% end-picture
-%%%%=======================================================
-
-%%%%=======================================================
-%% start-picture
-% establish orientation, etc.
-gsave
-%8.5 i2p 0 translate
-%90 rotate
-%.9 dup scale
-pic1-x pic1-y translate
-pic1-s dup scale
-gsave
-BeginEPSF
-%%%% begin input EPS file =======================================
-% BEGIN EPS FILE: mickey-e-2-p2-25.eps ==============================
-
-
-% END EPS FILE: mickey-e-2-p2-25.eps ==============================
-%%%% end of input EPS file ===================================
-EndEPSF
-grestore
-grestore
-%% end-picture
-%%%%=======================================================
-
-%%%%=======================================================
-%% start-picture
-% establish orientation, etc.
-gsave
-%8.5 i2p 0 translate
-%90 rotate
-%.9 dup scale
-pic2-x pic2-y translate
-pic2-s dup scale
-gsave
-BeginEPSF
-%%%% begin input EPS file =======================================
-% BEGIN EPS FILE: Heart-18.epss ==============================
-%!PS-Adobe-3.0 EPSF-3.0
-%%Creator: cairo 1.14.8 (http://cairographics.org)
-%%CreationDate: Sun Jan 13 16:49:38 2019
-%%Pages: 1
-%%DocumentData: Clean7Bit
-%%LanguageLevel: 2
-%%BoundingBox: 0 -1 241 239
-%%EndComments
-%%BeginProlog
-save
-50 dict begin
-/q { gsave } bind def
-/Q { grestore } bind def
-/cm { 6 array astore concat } bind def
-/w { setlinewidth } bind def
-/J { setlinecap } bind def
-/j { setlinejoin } bind def
-/M { setmiterlimit } bind def
-/d { setdash } bind def
-/m { moveto } bind def
-/l { lineto } bind def
-/c { curveto } bind def
-/h { closepath } bind def
-/re { exch dup neg 3 1 roll 5 3 roll moveto 0 rlineto
-      0 exch rlineto 0 rlineto closepath } bind def
-/S { stroke } bind def
-/f { fill } bind def
-/f* { eofill } bind def
-/n { newpath } bind def
-/W { clip } bind def
-/W* { eoclip } bind def
-/BT { } bind def
-/ET { } bind def
-/pdfmark where { pop globaldict /?pdfmark /exec load put }
-    { globaldict begin /?pdfmark /pop load def /pdfmark
-    /cleartomark load def end } ifelse
-/BDC { mark 3 1 roll /BDC pdfmark } bind def
-/EMC { mark /EMC pdfmark } bind def
-/cairo_store_point { /cairo_point_y exch def /cairo_point_x exch def } def
-/Tj { show currentpoint cairo_store_point } bind def
-/TJ {
-  {
-    dup
-    type /stringtype eq
-    { show } { -0.001 mul 0 cairo_font_matrix dtransform rmoveto } ifelse
-  } forall
-  currentpoint cairo_store_point
-} bind def
-/cairo_selectfont { cairo_font_matrix aload pop pop pop 0 0 6 array astore
-    cairo_font exch selectfont cairo_point_x cairo_point_y moveto } bind def
-/Tf { pop /cairo_font exch def /cairo_font_matrix where
-      { pop cairo_selectfont } if } bind def
-/Td { matrix translate cairo_font_matrix matrix concatmatrix dup
-      /cairo_font_matrix exch def dup 4 get exch 5 get cairo_store_point
-      /cairo_font where { pop cairo_selectfont } if } bind def
-/Tm { 2 copy 8 2 roll 6 array astore /cairo_font_matrix exch def
-      cairo_store_point /cairo_font where { pop cairo_selectfont } if } bind def
-/g { setgray } bind def
-/rg { setrgbcolor } bind def
-/d1 { setcachedevice } bind def
-%%EndProlog
-%%BeginSetup
-%%EndSetup
-%%Page: 1 1
-%%BeginPageSetup
-%%PageBoundingBox: 0 -1 241 239
-%%EndPageSetup
-q 0 -1 241 240 rectclip q
-%0.113725 0.113725 0.105882 rg
-1 0 0 rg
-118.902 209.1 m 103.828 229.35 84.328 240.373 57.777 238.202 c 31.23 236.026
- -1.098 213.373 0.027 173.623 c 1.152 133.873 30.254 110.998 55.754 96.452
- c 94.152 74.549 141.629 61.35 125.953 -0.002 c 140.504 31.049 132.703 57.151
- 108.254 83.924 c 75.48 119.85 27.254 132.526 27.254 178.498 c 27.254 224.475
- 84.328 243.373 118.902 209.1 c h
-118.902 209.1 m f
-111.93 191.776 m 126.629 220.498 150.703 238.424 177.855 238.424 c 205.004
- 238.424 233.652 222.225 239.277 188.475 c 252.105 111.373 146.055 106.725
- 141.254 59.248 c 137.129 104.248 223.379 109.799 221.652 178.873 c 221.055
- 203.998 202.68 224.702 176.504 226.725 c 138.402 229.725 111.93 191.776
- 111.93 191.776 c h
-111.93 191.776 m f
-Q Q
-showpage
-%%Trailer
-end restore
-%%EOF
-% END EPS FILE: Heart-18.epss ==============================
-%%%% end of input EPS file ===================================
-EndEPSF
-grestore
-grestore
-%% end-picture
-%%%%=======================================================
-
-
-%%%%=======================================================
-%%% end pictures
-
 grestore
 
 grestore
@@ -623,4 +372,4 @@ showpage
 %restore
 %=============================
 % END OF *PostScript* FILE
-%=============================
+%========================

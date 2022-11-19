@@ -1,0 +1,32 @@
+Font scaling in AFM files:
+
+Every value in an AFM file has been
+scaled by a scale factor (sf) to
+be within the range [0..1000].
+
+To get the actual value used in a document, the amount shown 
+"should be multiplied by sf/1000."
+
+Given a value x in the AFM coordinate system,
+its actual value of X:
+
+   X = x * (sf / 1000)
+
+and 
+
+   x = (X * 1000) / sf
+
+
+So given a desired font size of F, sf is given by
+
+   F = f * (sf / 1000)
+   F / f = sf / 1000
+   (F / f) * 1000 = sf
+
+For example, use a font size, F, of 12.
+
+   sf = (12 / 1000) * 1000 = 12
+
+Another example, an x size of 600:
+
+   
