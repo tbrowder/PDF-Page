@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os:
-name: Win64
+          - windows-latest
         raku-version:
           - 'latest'
     runs-on: ${{ matrix.os }}
