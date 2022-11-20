@@ -128,9 +128,6 @@ for %fonts.keys.sort -> $font-name {
             my ($kerned, $width) = $afm.kern($string, $Fh);
             my $hwidth = 0.5 * $width;
             $fh.say: "-$hwidth 0 moveto";
-            #note "kerned: |{$kerned.raku}|"; exit;
-
-            #=begin comment
             while $kerned.elems {
                 my $e = $kerned.shift;
                 if $e ~~Str {
@@ -144,8 +141,6 @@ for %fonts.keys.sort -> $font-name {
                 }
             }
             $fh.say();
-            #=end comment
-            #exit;
         }
 
         # write part 2
@@ -165,7 +160,7 @@ for %ps-fils.kv -> $stem, $psfil {
     say "See pdf file '$pdf'";
 }
 
-=finish
+#=finish
 
 #### subroutines ####
 sub create-template(:$ifil!, :$ofil, :$debug) {
@@ -177,6 +172,33 @@ sub create-template(:$ifil!, :$ofil, :$debug) {
     }
 }
 
+sub show-kerned-string(
+    $fh,             # a handle to an opened PostScript file
+    Num $x, Num $y,  # current point
+    Font::AFM :$afm!, 
+    :$string!,
+    :$size!,
+    :$debug,
+    ) is export {
+
+    # kerning
+    my ($kerned, $width) = $afm.kern($string, $size);
+    while $kerned.elems {
+        my $e = $kerned.shift;
+        if $e ~~Str {
+            # if it's a Str, show it
+            $fh.print: " ($e) show";
+        }
+        else {
+            # otherwise, convert to a Num and rmoveto
+            $e .= Num;
+            $fh.print: " 0 $e rmoveto";
+        }
+    }
+    # end the line
+    $fh.say();
+}
+
 sub read-template($fnam, :$debug) {
 }
 
@@ -186,5 +208,5 @@ sub write-resources() {
 
 sub ps2pdf($ps) is export {
     my $cmd = "ps2pdf $ps";
-    my $res = cmd $pdf;
+    my $res = cmd $cmd;
 }

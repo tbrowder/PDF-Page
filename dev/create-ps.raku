@@ -34,7 +34,7 @@ sub write-resources() {
 
 sub ps2pdf($ps) is export {
     my $cmd = "ps2pdf $ps";
-    my $res = cmd $pdf;
+    my $res = cmd $cmd;
 }
 
 
