@@ -4,7 +4,7 @@ use Font::AFM;
 use Proc::Easier;
 use Text::Utils :ALL;
 
-my $tmpl  = "house-numbers.ps.tmpl";
+my $tmpl  = "tmpls/house-numbers.ps.tmpl";
 my @lines = $tmpl.IO.lines;
 my @part1;
 my @part2;
@@ -35,7 +35,7 @@ if not @*ARGS.elems {
     Usage: {$*PROGRAM.basename} go
 
     Prints '114' on a single page in various fonts and heights
-    for assessing numbers to buy for 114 Shoreline Drive
+    for assessing house numbers to buy for 114 Shoreline Drive
 
     HERE
     exit;
@@ -50,53 +50,60 @@ for @fonts -> $font-name {
 }
 
 # one set of files for each font
+my %ps-fils;
 for %fonts.keys.sort -> $font-name {
-    my $title = "Numbers-{$font-name}";
 
     my $afm = %fonts{$font-name};
     say "Font: {$afm.FontName}";
     my %bbox = $afm.BBox;
 
-    # one set for each height
+    # one set for each number height
+    my $odir = "ps-out";
     for @inches -> $in {
-        $title ~= "-{$in}-inch.ps";
+        #my $title = "ps-out/Numbers-{$font-name}-{$in}-inch.ps";
+        my $stem = "Numbers-{$font-name}-{$in}-inch";
+        my $psfil = "$odir/$stem.ps";
+        %ps-fils{$stem} = $psfil;
 
         # individual character bounding boxes
         my ($llx-one, $lly-one, $urx-one, $ury-one) = %bbox<one>;
         my ($llx-four, $lly-four, $urx-four, $ury-four) = %bbox<four>;
         # heights:
-        my $h1 = $ury-one  - $lly-one;
-        my $h4 = $ury-four - $lly-four;
+        my $sCh1 = $ury-one  - $lly-one;
+        my $sCh4 = $ury-four - $lly-four;
         # average
-        my $h = 0.5 * ($h1 + $h4);
+        my $sCh = 0.5 * ($sCh1 + $sCh4);
 
         # scale so height is in inches
         # the font bbox is 1000 x 1000
 
         =begin comment
-           let x = char height in 1000x1000 box which represents the font size scaled to 1000
-           let f = font size, then f x sf = 1000
-           so sf = 1000 / f
+           let sCh = scaled char height in 1000x1000 box which represents the font size scaled to 1000
+               sFh = 1000 scaled font height
+           let Ch  = char height in the instantiated font
+           let Fh  = font size that defines the instantiated font
+           then 
+               Ch = sCh/1000 * fh
+           to define a desired Ch in a given instantiated font
+               Fh = Ch * 1000/sCh
         =end comment
 
-        my $xhp = $h/1000.0 * 12;
-        # to scale it up
-        # X/ 
-
-        my $height =  ($in * 72)/1000.0;
+        my $Ch = $in * 72; # must convert to PS points
+        my $Fh = $Ch * 1000.0 / $sCh;
 
         # create the output file
-        my $fh = open $title, :w;
+        my $fh = open $psfil, :w;
 
         # write part 1
         $fh.say($_) for @part1;
 
         # write the specific info for the file
-        #   the title info over the top line
-        $fh.say: "/Times-Roman 14 selectfont 0 18 moveto (Font: $font-name; height: $in in.) 0 puttext";
+        #   the title info under the bottom line
+        $fh.say: "/Times-Roman 14 selectfont -5 i2p -18 moveto";
+        $fh.say: "(Font: $font-name; number height: $in in.) 0 puttext";
 
         #   the 114 in the selected font and size
-        $fh.say: "/$font-name $height selectfont";
+        $fh.say: "/$font-name $Fh selectfont";
         $fh.say: "0 0 moveto (114) 0 puttext";
 
         # write part 2
@@ -105,7 +112,14 @@ for %fonts.keys.sort -> $font-name {
         # close the file
         $fh.close;
     }
+}
 
+# convert ps to pdf
+my $pdfdir = "pdf-out";
+for %ps-fils.kv -> $stem, $psfil {
+    my $pdf = "$pdfdir/$stem.pdf";
+    my $args = "ps2pdf $psfil $pdf";
+    cmd $args;
 }
 
 =finish
