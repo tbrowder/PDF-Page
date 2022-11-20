@@ -27,8 +27,16 @@ for @lines -> $line {
 }
 
 my %fonts;
-my @fonts = <Helvetica Helvetica-Bold Helvetica-Oblique Helvetica-BoldOblique
-            Times-Roman Times-Bold Times-Italic Times-BoldItalic>;
+=begin comment
+my @fonts = <
+    Helvetica Helvetica-Bold Helvetica-Oblique Helvetica-BoldOblique
+    Times-Roman Times-Bold Times-Italic
+    Times-BoldItalic
+>;
+=end comment
+my @fonts = <
+    Times-BoldItalic
+>;
 
 my $debug = 0;
 if not @*ARGS.elems {
@@ -57,6 +65,7 @@ for %fonts.keys.sort -> $font-name {
     my $afm = %fonts{$font-name};
     say "Font: {$afm.FontName}";
     my %bbox = $afm.BBox;
+    my @font-bbox = $afm.FontBBox;
 
     # one set for each number height
     my $odir = "ps-out";
@@ -105,31 +114,38 @@ for %fonts.keys.sort -> $font-name {
 
         #   the 114 in the selected font and size
         my $string = "114";
-        my %glyphs = from-json "font-data/glyphs.json".IO.slurp;
+        #my $string = "AV1C";
+        #my %glyphs = from-json "font-data/glyphs.json".IO.slurp;
 
-        #   try kerning
-        my ($kerned, $width) = $afm.kern($string, $Fh, :%glyphs);
 
         $fh.say: "/$font-name $Fh selectfont";
-        if 0 {
+        if 1 {
             # no kerning
-            #$fh.say: "0 0 moveto (114) 0 puttext";
             $fh.say: "0 0 moveto ($string) 0 puttext";
         }
         else {
             # kerning
+            my ($kerned, $width) = $afm.kern($string, $Fh);
             my $hwidth = 0.5 * $width;
             $fh.say: "-$hwidth 0 moveto";
-            my @kern = @($kerned);
-            note say() for @kern; exit;
+            #note "kerned: |{$kerned.raku}|"; exit;
 
-            while @kern.elems {
-                my $c = @kern.shift;
-                my $w = @kern.shift;
-
-                $fh.print: " ($c) show 0 $w rmoveto";
+            #=begin comment
+            while $kerned.elems {
+                my $e = $kerned.shift;
+                if $e ~~Str {
+                    # if it's a Str, show it
+                    $fh.print: " ($e) show";
+                }
+                else {
+                    # otherwise, convert to a Num and rmoveto
+                    $e .= Num;
+                    $fh.print: " 0 $e rmoveto";
+                }
             }
             $fh.say();
+            #=end comment
+            #exit;
         }
 
         # write part 2
@@ -146,6 +162,7 @@ for %ps-fils.kv -> $stem, $psfil {
     my $pdf = "$pdfdir/$stem.pdf";
     my $args = "ps2pdf $psfil $pdf";
     cmd $args;
+    say "See pdf file '$pdf'";
 }
 
 =finish
