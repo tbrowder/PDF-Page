@@ -3,6 +3,7 @@
 use Font::AFM;
 use Proc::Easier;
 use Text::Utils :ALL;
+use JSON::Fast;
 
 my $tmpl  = "tmpls/house-numbers.ps.tmpl";
 my @lines = $tmpl.IO.lines;
@@ -26,7 +27,7 @@ for @lines -> $line {
 }
 
 my %fonts;
-my @fonts = <Helvetica Helvetica-Bold Helvetica-Oblique Helvetica-BoldOblique 
+my @fonts = <Helvetica Helvetica-Bold Helvetica-Oblique Helvetica-BoldOblique
             Times-Roman Times-Bold Times-Italic Times-BoldItalic>;
 
 my $debug = 0;
@@ -82,7 +83,7 @@ for %fonts.keys.sort -> $font-name {
                sFh = 1000 scaled font height
            let Ch  = char height in the instantiated font
            let Fh  = font size that defines the instantiated font
-           then 
+           then
                Ch = sCh/1000 * fh
            to define a desired Ch in a given instantiated font
                Fh = Ch * 1000/sCh
@@ -99,12 +100,37 @@ for %fonts.keys.sort -> $font-name {
 
         # write the specific info for the file
         #   the title info under the bottom line
-        $fh.say: "/Times-Roman 14 selectfont -5 i2p -18 moveto";
-        $fh.say: "(Font: $font-name; number height: $in in.) 0 puttext";
+        $fh.say: "/Times-Roman 14 selectfont -5 i2p -4 i2p 18 add moveto";
+        $fh.say: "(Font: $font-name; number height: $in in.) 2 puttext";
 
         #   the 114 in the selected font and size
+        my $string = "114";
+        my %glyphs = from-json "font-data/glyphs.json".IO.slurp;
+
+        #   try kerning
+        my ($kerned, $width) = $afm.kern($string, $Fh, :%glyphs);
+
         $fh.say: "/$font-name $Fh selectfont";
-        $fh.say: "0 0 moveto (114) 0 puttext";
+        if 0 {
+            # no kerning
+            #$fh.say: "0 0 moveto (114) 0 puttext";
+            $fh.say: "0 0 moveto ($string) 0 puttext";
+        }
+        else {
+            # kerning
+            my $hwidth = 0.5 * $width;
+            $fh.say: "-$hwidth 0 moveto";
+            my @kern = @($kerned);
+            note say() for @kern; exit;
+
+            while @kern.elems {
+                my $c = @kern.shift;
+                my $w = @kern.shift;
+
+                $fh.print: " ($c) show 0 $w rmoveto";
+            }
+            $fh.say();
+        }
 
         # write part 2
         $fh.say($_) for @part2;

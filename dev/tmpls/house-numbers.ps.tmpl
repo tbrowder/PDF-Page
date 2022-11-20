@@ -326,8 +326,11 @@ gsave
 % make middle of page the origin
 11 i2p .5 mul 8.5 i2p .5 mul translate
 % draw 2 horizontal lines delimiting the width of the door frame
+gsave
+0 setlinewidth
 newpath -5.5 i2p  3 i2p moveto 11.5 i2p 0 rlineto stroke
 newpath -5.5 i2p -3 i2p moveto 11.5 i2p 0 rlineto stroke
+grestore
 
 %=== SPLIT
 
